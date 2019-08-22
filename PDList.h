@@ -49,7 +49,7 @@ public:
    /* This is a suggestion of what you could use. */
    /* You can change this code.                   */
 private:
-   PDPtr    positions[MAX_POS]; //array of PositionDistance*
+   PDPtr    positions[MAX_POS]; //an array of PositionDistance pointers
    int      numPositions;
 
 

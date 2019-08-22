@@ -5,32 +5,30 @@
 #include "Types.h"
 
 class PositionDistance {
-public:
+ public:
+  /*                                           */
+  /* DO NOT MOFIFY ANY CODE IN THIS SECTION    */
+  /*                                           */
 
-   /*                                           */
-   /* DO NOT MOFIFY ANY CODE IN THIS SECTION    */
-   /*                                           */
+  // x-co-ordinate
+  int getX();
 
-   // x-co-ordinate
-   int getX();
+  // y-co-ordinate
+  int getY();
 
-   // y-co-ordinate
-   int getY();
+  // Distance
+  int getDistance();
 
-   // Distance
-   int getDistance();
+  /*                                           */
+  /* YOU MAY ADD YOUR MODIFICATIONS HERE       */
+  /*                                           */
+  PositionDistance();
+  PositionDistance(int x, int y, int distance);
 
-
-   /*                                           */
-   /* YOU MAY ADD YOUR MODIFICATIONS HERE       */
-   /*                                           */
-   PositionDistance();
-   PositionDistance(int x, int y, int distance);
-
-private:
-   int x;
-   int y;
-   int distance;
+ private:
+  int x;
+  int y;
+  int distance;
 };
 
 /*                                           */
@@ -39,4 +37,4 @@ private:
 // Pointer to a Position-Distance
 typedef PositionDistance* PDPtr;
 
-#endif // COSC_ASS_ONE_POSITION
+#endif  // COSC_ASS_ONE_POSITION

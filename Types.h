@@ -6,4 +6,4 @@
 // REMEMBER: in a grid, the location (x,y) is found by grid[y][x]!
 typedef char** Grid;
 
-#endif // COSC_ASS_ONE_TYPES
+#endif  // COSC_ASS_ONE_TYPES
