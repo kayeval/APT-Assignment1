@@ -31,20 +31,16 @@ PDPtr PDList::get(int i) {
 }
 
 void PDList::addBack(PDPtr position) {
-  if (containsCoordinate(
-          position)) {  // if coordinates already exist in reachablePositions
-    // for (int i = 0; i < numPositions; i++)
-    //   std::cout << "positions[" << i << "] = " << "(" << positions[i]->getX()
-    //   << "," << positions[i]->getY() << "," << positions[i]->getDistance() <<
-    //   ")" << std::endl;
-
+  // if coordinates already exist in reachablePositions
+  if (containsCoordinate(position)) {
     for (int i = indexToRemove(position); i < numPositions; i++)
       positions[i] = positions[i + 1];  // shift elements in array by 1 position
 
     delete positions[numPositions - 1];  // delete last element in array since
                                          // it's been shifted already
-    positions[numPositions - 1] =
-        nullptr;  // initialize deleted element in array
+
+    // initialize deleted element in array
+    positions[numPositions - 1] = nullptr;
     numPositions--;
   } else {
     positions[numPositions] = position;

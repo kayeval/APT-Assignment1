@@ -68,18 +68,20 @@ PDList *PathPlanning::getReachablePositions() {
     int distance = currentPos->getDistance() + 1;
 
     PositionDistance *adjacentCells[4] = {
-        new PositionDistance(curX, curY - 1,
-                             distance),  // cell above current position
-        new PositionDistance(curX - 1, curY,
-                             distance),  // cell to the left of current position
-        new PositionDistance(
-            curX + 1, curY,
-            distance),  // cell to the right of current position
-        new PositionDistance(curX, curY + 1,
-                             distance)  // cell below current position
-    };
+        // cell above current position
+        new PositionDistance(curX, curY - 1, distance),
 
-    // check adjacent cells excluding the initial position
+        // cell to the left of current position
+        new PositionDistance(curX - 1, curY, distance),
+
+        // cell to the right of current position
+        new PositionDistance(curX + 1, curY, distance),
+
+        // cell below current position
+        new PositionDistance(curX, curY + 1, distance)};
+
+    // check if there are any accessible adjacent cells
+    // (excluding the initial position)
     for (PositionDistance *pos : adjacentCells) {
       if (!reachablePositions->containsCoordinate(pos)) {
         if (maze[pos->getY()][pos->getX()] == '.')
@@ -88,7 +90,9 @@ PDList *PathPlanning::getReachablePositions() {
         delete pos;
     }
 
-    visited->addBack(currentPos);  // add currentPos to visited list
+    // add currentPos to visited list
+    visited->addBack(currentPos);
+
     nextToVisit = indexNotVisited(visited);
   } while (nextToVisit >= 0);
 
