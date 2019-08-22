@@ -1,4 +1,7 @@
-// TODO
+
+// TODO: COMPILE ON SCHOOL'S UNIX SERVER
+
+// TODO: DOCUMENTATION
 // At the top of your PathPlanning implementation you must provide a description
 // of the design of your implementation. Provide this in a comment-block. This
 // block should: • Describe (briefly) the approach you have taken in your
@@ -19,10 +22,12 @@ PathPlanning::PathPlanning(Grid maze, int rows, int cols) {
   this->cols = cols;
   this->initialPos = nullptr;
 
-  for (int i = 0; i < rows; i++) this->maze[i] = new char[cols]{};
+  for (int i = 0; i < rows; i++)
+    this->maze[i] = new char[cols]{};
 
   for (int i = 0; i < rows; i++)
-    for (int j = 0; j < cols; j++) this->maze[i][j] = maze[i][j];
+    for (int j = 0; j < cols; j++)
+      this->maze[i][j] = maze[i][j];
 
   reachablePositions = new PDList();
 }
@@ -68,16 +73,16 @@ PDList *PathPlanning::getReachablePositions() {
     int distance = currentPos->getDistance() + 1;
 
     PositionDistance *adjacentCells[4] = {
-        // cell above current position
+        // the cell above current position
         new PositionDistance(curX, curY - 1, distance),
 
-        // cell to the left of current position
+        // the cell to the left of current position
         new PositionDistance(curX - 1, curY, distance),
 
-        // cell to the right of current position
+        // the cell to the right of current position
         new PositionDistance(curX + 1, curY, distance),
 
-        // cell below current position
+        // the cell below current position
         new PositionDistance(curX, curY + 1, distance)};
 
     // check if there are any accessible adjacent cells
@@ -87,6 +92,7 @@ PDList *PathPlanning::getReachablePositions() {
         if (maze[pos->getY()][pos->getX()] == '.')
           reachablePositions->addBack(pos);
       } else
+        // free up this position from memory since it won't be stored
         delete pos;
     }
 
@@ -107,8 +113,6 @@ int PathPlanning::indexNotVisited(PDList *visited) {
 
   return -1;
 }
-
-// TODO: COMPILE ON SCHOOL'S UNIX SERVER
 
 // THIS IS FOR MILESTONE 3 ONLY
 //    ONLY IMPLEMENT THIS IF YOU ATTEMPT MILESTONE 3
