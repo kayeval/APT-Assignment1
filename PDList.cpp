@@ -9,25 +9,21 @@ PDList::PDList() {
   *positions = new PositionDistance[MAX_POS]{};
   numPositions = 0;
 
-  for (int i = 0; i < MAX_POS; i++)
-    positions[i] = nullptr;
+  for (int i = 0; i < MAX_POS; i++) positions[i] = nullptr;
 }
 
 PDList::~PDList() { clear(); }
 
 PDList::PDList(PDList &copy) {
   for (int i = 0; i < copy.size(); i++) {
-    PDPtr curr = copy.get(i);
-    positions[i] = new PositionDistance(curr->getX(),
-      curr->getY(), curr->getDistance());
+    positions[i] = new PositionDistance(*copy.get(i));
   }
 }
 
 int PDList::size() { return numPositions; }
 
 PDPtr PDList::get(int i) {
-  if (positions[i])
-    return positions[i];
+  if (positions[i]) return positions[i];
 
   return nullptr;
 }
@@ -35,13 +31,12 @@ PDPtr PDList::get(int i) {
 void PDList::addBack(PDPtr position) {
   // check if passed coordinates already exist in the list
   if (containsCoordinate(position)) {
-
     // shift elements in array by 1 position
     for (int i = indexToRemove(position); i < numPositions; i++)
-      positions[i] = positions[i + 1]; 
+      positions[i] = positions[i + 1];
 
     // delete last element in array since it's been shifted already
-    delete positions[numPositions - 1];  
+    delete positions[numPositions - 1];
 
     // initialize deleted element in array
     positions[numPositions - 1] = nullptr;

@@ -24,6 +24,7 @@ class PositionDistance {
   /*                                           */
   PositionDistance();
   PositionDistance(int x, int y, int distance);
+  PositionDistance(PositionDistance& copy);
 
  private:
   int x;

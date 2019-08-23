@@ -1,17 +1,13 @@
 
 #include "PositionDistance.h"
 
-PositionDistance::PositionDistance() {
-  this->x = 0;
-  this->y = 0;
-  distance = 0;
-}
+PositionDistance::PositionDistance() : x(0), y(0), distance(0) {}
 
-PositionDistance::PositionDistance(int x, int y, int distance) {
-  this->x = x;
-  this->y = y;
-  this->distance = distance;
-}
+PositionDistance::PositionDistance(int x, int y, int distance)
+    : x(x), y(y), distance(distance) {}
+
+PositionDistance::PositionDistance(PositionDistance& copy)
+    : x(copy.getX()), y(copy.getY()), distance(copy.getDistance()) {}
 
 int PositionDistance::getX() { return x; }
 

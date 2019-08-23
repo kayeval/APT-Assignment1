@@ -8,51 +8,48 @@
 #define MAX_POS 100
 
 class PDList {
-public:
+ public:
+  /*                                           */
+  /* DO NOT MOFIFY ANY CODE IN THIS SECTION    */
+  /*                                           */
 
-   /*                                           */
-   /* DO NOT MOFIFY ANY CODE IN THIS SECTION    */
-   /*                                           */
+  // Create a New Empty List
+  PDList();
 
+  // Clean-up the list
+  ~PDList();
 
-   // Create a New Empty List
-   PDList();
+  // Number of items in the list
+  int size();
 
-   // Clean-up the list
-   ~PDList();
+  // Get a pointer to the position-distance at index i
+  PDPtr get(int i);
 
-   // Number of items in the list
-   int size();
+  // Add a position-distance (as a pointer) to the list
+  //    This class now has control over the pointer
+  //    And should delete the pointer if the position-distance is removed from
+  //    the list
+  void addBack(PDPtr position);
 
-   // Get a pointer to the position-distance at index i
-   PDPtr get(int i);
+  // Checks if the list contains a position-distance with the same co-ordinate
+  //    as the given position.
+  bool containsCoordinate(PDPtr position);
 
-   // Add a position-distance (as a pointer) to the list
-   //    This class now has control over the pointer
-   //    And should delete the pointer if the position-distance is removed from the list
-   void addBack(PDPtr position);
+  // Remove everything from the list
+  // Don't forget to clean-up the memory!
+  void clear();
 
-   // Checks if the list contains a position-distance with the same co-ordinate
-   //    as the given position.
-   bool containsCoordinate(PDPtr position);
+  /*                                           */
+  /* YOU MAY ADD YOUR MODIFICATIONS HERE       */
+  /*                                           */
+  PDList(PDList& copy);
+  int indexToRemove(PDPtr position);
 
-   // Remove everything from the list
-   // Don't forget to clean-up the memory!
-   void clear();
-
-   /*                                           */
-   /* YOU MAY ADD YOUR MODIFICATIONS HERE       */
-   /*                                           */
-   PDList(PDList& copy);
-   int indexToRemove(PDPtr position);
-
-   /* This is a suggestion of what you could use. */
-   /* You can change this code.                   */
-private:
-   PDPtr    positions[MAX_POS]; //an array of PositionDistance pointers
-   int      numPositions;
-
-
+  /* This is a suggestion of what you could use. */
+  /* You can change this code.                   */
+ private:
+  PDPtr positions[MAX_POS];  // an array of PositionDistance pointers
+  int numPositions;
 };
 
-#endif // COSC_ASS_ONE_POSITION_LIST
+#endif  // COSC_ASS_ONE_POSITION_LIST

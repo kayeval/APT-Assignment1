@@ -1,14 +1,18 @@
 
-// TODO: COMPILE ON SCHOOL'S UNIX SERVER
+// TODO BEFORE SUBMISSION:
 
-// TODO: DOCUMENTATION
+// 1 - COMPILE ON SCHOOL'S UNIX SERVER
+
+// 2 - ADD DOCUMENTATION
 // At the top of your PathPlanning implementation you must provide a description
-// of the design of your implementation. Provide this in a comment-block. This
-// block should: • Describe (briefly) the approach you have taken in your
-// implementation • Describe (briefly) any issues you encountered • Justify
-// choices you made in your software design and implementation • Analyse
-// (briefly) the efficiency and quality of your implementation, identifying both
-// positive and negative aspects of your software
+// of the design of your implementation. Provide this in a comment-block.
+// This block should:
+// • Describe (briefly) the approach you have taken in your
+// implementation
+// • Describe (briefly) any issues you encountered •
+// Justify choices you made in your software design and implementation
+// • Analyse (briefly) the efficiency and quality of your implementation,
+// identifying both positive and negative aspects of your software
 
 #include "PathPlanning.h"
 
@@ -22,12 +26,10 @@ PathPlanning::PathPlanning(Grid maze, int rows, int cols) {
   this->cols = cols;
   this->initialPos = nullptr;
 
-  for (int i = 0; i < rows; i++)
-    this->maze[i] = new char[cols]{};
+  for (int i = 0; i < rows; i++) this->maze[i] = new char[cols]{};
 
   for (int i = 0; i < rows; i++)
-    for (int j = 0; j < cols; j++)
-      this->maze[i][j] = maze[i][j];
+    for (int j = 0; j < cols; j++) this->maze[i][j] = maze[i][j];
 
   reachablePositions = new PDList();
 }
@@ -116,4 +118,8 @@ int PathPlanning::indexNotVisited(PDList *visited) {
 
 // THIS IS FOR MILESTONE 3 ONLY
 //    ONLY IMPLEMENT THIS IF YOU ATTEMPT MILESTONE 3
-PDList *PathPlanning::getPath(int toX, int toY) { return nullptr; }
+PDList *PathPlanning::getPath(int toX, int toY) {
+  PDList *shortestPath = new PDList(*reachablePositions);
+
+  return shortestPath;
+}
