@@ -161,6 +161,7 @@ PDList *PathPlanning::getPath(int toX, int toY) {
   //             << shortestPath->get(i)->getDistance() << ")" << std::endl;
 
   PDPtr currentPos = shortestPath->findPDPtrByCoordinates(toX, toY);
+  PDPtr foundPos = nullptr;
 
   do {
     // generate all adjacent cells of current position
@@ -186,12 +187,13 @@ PDList *PathPlanning::getPath(int toX, int toY) {
     for (int j = 0; j < ADJACENT_SIZE; j++) {
       // check if any adjacent cells are in shortestPath
       if (shortestPath->containsCoordinate(adjacentCells[j])) {
-        if (shortestPath
-                ->findPDPtrByCoordinates(currentPos->getX(), currentPos->getY())
-                ->getDistance() == distance) {
-          currentPos = adjacentCells[j];
+        foundPos = shortestPath->findPDPtrByCoordinates(
+            adjacentCells[j]->getX(), adjacentCells[j]->getY());
+        if (foundPos->getDistance() == distance) {
+          currentPos = foundPos;
 
-          // remove all other coordinates with the same distance from the list
+          // remove all other coordinates with the same distance from
+          // the list
           shortestPath->removePDPtrWithSameDistance(currentPos);
         } else {
           shortestPath->addBack(adjacentCells[j]);
