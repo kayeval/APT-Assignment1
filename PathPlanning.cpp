@@ -158,8 +158,8 @@ PDList *PathPlanning::getPath(int toX, int toY) {
   //             << reachablePositions->get(i)->getY() << ","
   //             << reachablePositions->get(i)->getDistance() << ")" <<
   //             std::endl;
-
-  PDList *shortestPath(getReachablePositions());
+  PDList *shortestPath(reachablePositions);
+  // PDList *shortestPath(temp);
 
   for (int i = 0; i < shortestPath->size(); i++)
     std::cout << "shortestPath[" << i << "] = (" << shortestPath->get(i)->getX()

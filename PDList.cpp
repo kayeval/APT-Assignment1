@@ -8,14 +8,18 @@
 PDList::PDList() : numPositions(0) {
   *positions = new PositionDistance[MAX_POS]{};
   for (int i = 0; i < MAX_POS; i++) positions[i] = nullptr;
+
+  std::cout << "CONSTRUCTOR CALLED" << std::endl;
 }
 
 PDList::~PDList() { clear(); }
 
 PDList::PDList(PDList &copy) {
-  std::cout << "COPY CONSTRUCTOR CALLED" << std::endl;
+  std::cout << "=================================COPY CONSTRUCTOR CALLED"
+            << std::endl;
 
   numPositions = copy.size();
+  *positions = new PositionDistance[MAX_POS]{};
 
   for (int i = 0; i < copy.size(); i++) {
     positions[i] = new PositionDistance(*copy.get(i));
