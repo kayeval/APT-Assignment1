@@ -381,7 +381,7 @@ bool run_unit_test(DataPtr data) {
   }
 
   // Delete Position list
-  // delete finalPositions; //TODO UNCOMMENT THIS
+  delete finalPositions;
 
   // Do Milestone 3 tests
   if (data->m3) {
@@ -412,8 +412,6 @@ bool run_unit_test(DataPtr data) {
       testPassed = checked.size() == data->path.size();
     }
   }
-
-  delete finalPositions;  // TODO REMOVE THIS
 
   // Delete Path Planner
   delete rp;
