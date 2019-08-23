@@ -13,6 +13,8 @@ PDList::PDList() : numPositions(0) {
 PDList::~PDList() { clear(); }
 
 PDList::PDList(PDList &copy) {
+  std::cout << "COPY CONSTRUCTOR CALLED" << std::endl;
+
   numPositions = copy.size();
 
   for (int i = 0; i < copy.size(); i++) {
@@ -83,9 +85,7 @@ bool PDList::containsCoordinate(PDPtr position) {
 
 void PDList::clear() {
   for (int i = 0; i < numPositions; i++) {
-    if (positions[i]) {
-      delete positions[i];
-      positions[i] = nullptr;
-    }
+    delete positions[i];
+    positions[i] = nullptr;
   }
 }
