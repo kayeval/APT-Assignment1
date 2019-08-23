@@ -2,6 +2,7 @@
 // TODO BEFORE SUBMISSION:
 
 // 1 - COMPILE ON SCHOOL'S UNIX SERVER
+// 2 - RUN TESTS AND VALGRIND ON COMPILED
 
 // 2 - ADD DOCUMENTATION
 // At the top of your PathPlanning implementation you must provide a description
@@ -20,6 +21,8 @@
 #include <cstdlib>
 #include <iostream>
 
+#define ADJACENT_SIZE 4
+
 PathPlanning::PathPlanning(Grid maze, int rows, int cols) {
   this->maze = new char *[rows] {};
   this->rows = rows;
@@ -35,7 +38,7 @@ PathPlanning::PathPlanning(Grid maze, int rows, int cols) {
 }
 
 PathPlanning::~PathPlanning() {
-  delete reachablePositions;
+  reachablePositions->clear();  // TO RESOLVE: invalid read?
 
   for (int i = 0; i < rows; i++) {
     delete[] maze[i];
@@ -65,7 +68,7 @@ PDList *PathPlanning::getReachablePositions() {
 
   PDList *visited = new PDList();
   int nextToVisit = 0;
-  PDPtr currentPos;
+  PDPtr currentPos = nullptr;
 
   do {
     currentPos = reachablePositions->get(nextToVisit);
@@ -74,7 +77,7 @@ PDList *PathPlanning::getReachablePositions() {
     int curY = currentPos->getY();
     int distance = currentPos->getDistance() + 1;
 
-    PositionDistance *adjacentCells[4] = {
+    PDPtr adjacentCells[ADJACENT_SIZE] = {
         // the cell above current position
         new PositionDistance(curX, curY - 1, distance),
 
@@ -89,12 +92,12 @@ PDList *PathPlanning::getReachablePositions() {
 
     // check if there are any accessible adjacent cells
     // (excluding the initial position)
-    for (PositionDistance *pos : adjacentCells) {
+    for (PDPtr pos : adjacentCells) {
       if (!reachablePositions->containsCoordinate(pos)) {
         if (maze[pos->getY()][pos->getX()] == '.')
           reachablePositions->addBack(pos);
       } else
-        // free up this position from memory since it won't be stored
+        // free up this position from memory since it won't be needed
         delete pos;
     }
 
@@ -104,9 +107,39 @@ PDList *PathPlanning::getReachablePositions() {
     nextToVisit = indexNotVisited(visited);
   } while (nextToVisit >= 0);
 
-  PDList *temp = reachablePositions;
+  PDList *temp(reachablePositions);
   temp->addBack(initialPos);
+
   return temp;
+}
+
+// TO FIX
+PDPtr *getAdjacentPositions(PDPtr position) {
+  // int curX = position->getX();
+  // int curY = position->getY();
+  // int distance = position->getDistance() + 1;
+
+  // is an array with automatic storage duration. Memory where it resides is
+  // deallocated once the execution goes out of the scope of your function, thus
+  // pointer to this memory that you return becomes invalid (dangling pointer).
+  // Trying to access memory, that has already been deallocated,
+  //     results in undefined behaviour.
+
+  // PDPtr adjacentCells[ADJACENT_SIZE] = {
+  //     // the cell above current position
+  //     new PositionDistance(curX, curY - 1, distance),
+
+  //     // the cell to the left of current position
+  //     new PositionDistance(curX - 1, curY, distance),
+
+  //     // the cell to the right of current position
+  //     new PositionDistance(curX + 1, curY, distance),
+
+  //     // the cell below current position
+  //     new PositionDistance(curX, curY + 1, distance)};
+
+  // return adjacentCells;
+  return nullptr;
 }
 
 int PathPlanning::indexNotVisited(PDList *visited) {
@@ -119,7 +152,61 @@ int PathPlanning::indexNotVisited(PDList *visited) {
 // THIS IS FOR MILESTONE 3 ONLY
 //    ONLY IMPLEMENT THIS IF YOU ATTEMPT MILESTONE 3
 PDList *PathPlanning::getPath(int toX, int toY) {
-  PDList *shortestPath = new PDList(*reachablePositions);
+  // for (int i = 0; i < reachablePositions->size(); i++)
+  //   std::cout << "reachablePositions[" << i << "] = ("
+  //             << reachablePositions->get(i)->getX() << ","
+  //             << reachablePositions->get(i)->getY() << ","
+  //             << reachablePositions->get(i)->getDistance() << ")" <<
+  //             std::endl;
 
-  return shortestPath;
+  PDList *shortestPath(getReachablePositions());
+
+  for (int i = 0; i < shortestPath->size(); i++)
+    std::cout << "shortestPath[" << i << "] = (" << shortestPath->get(i)->getX()
+              << "," << shortestPath->get(i)->getY() << ","
+              << shortestPath->get(i)->getDistance() << ")" << std::endl;
+
+  // PDPtr currentPos = shortestPath->findPDPtr(toX, toY);
+
+  // do {
+  //   // generate all adjacent cells of current position
+  //   // TODO: use getAdjacentPositions()
+  //   int curX = currentPos->getX();
+  //   int curY = currentPos->getY();
+  //   int distance = currentPos->getDistance() + 1;
+
+  //   PDPtr adjacentCells[ADJACENT_SIZE] = {
+  //       // the cell above current position
+  //       new PositionDistance(curX, curY - 1, distance),
+
+  //       // the cell to the left of current position
+  //       new PositionDistance(curX - 1, curY, distance),
+
+  //       // the cell to the right of current position
+  //       new PositionDistance(curX + 1, curY, distance),
+
+  //       // the cell below current position
+  //       new PositionDistance(curX, curY + 1, distance)};
+
+  //   // check if any adjacent cells are in shortestPath
+  //   for (PDPtr pos : adjacentCells) {
+  //     if (shortestPath->containsCoordinate(pos)) {
+  //       if (pos->getDistance() == currentPos->getDistance() - 1)
+  //         currentPos = pos;
+  //       else {
+  //         shortestPath->addBack(pos);
+  //         delete pos;
+  //       }
+  //     }
+  //   }
+
+  //   // if distance of adjacent cell == prev loc - 1, keep it in shortestPath
+  //   // and set it as prev
+
+  //   // else remove all other adjacent cells from shortestPath
+  // } while (currentPos != initialPos);
+
+  // PDList *copy(shortestPath);
+  // return copy;
+  return nullptr;
 }

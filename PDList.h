@@ -43,13 +43,17 @@ class PDList {
   /* YOU MAY ADD YOUR MODIFICATIONS HERE       */
   /*                                           */
   PDList(PDList& copy);
-  int indexToRemove(PDPtr position);
+  PDPtr findPDPtr(int x, int y);
 
   /* This is a suggestion of what you could use. */
   /* You can change this code.                   */
  private:
   PDPtr positions[MAX_POS];  // an array of PositionDistance pointers
   int numPositions;
+
+  bool isEqual(int x, int y, PDPtr p);
+  bool isEqual(PDPtr p1, PDPtr p2);
+  int indexToRemove(PDPtr position);
 };
 
 #endif  // COSC_ASS_ONE_POSITION_LIST

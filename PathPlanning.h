@@ -34,15 +34,16 @@ class PathPlanning {
   /*                                           */
   /* YOU MAY ADD YOUR MODIFICATIONS HERE       */
   /*                                           */
-  int indexNotVisited(PDList* visited);
 
  private:
   Grid maze;
   int rows;
   int cols;
-
-  PositionDistance* initialPos;
+  PDPtr initialPos;
   PDList* reachablePositions;
+
+  int indexNotVisited(PDList* visited);
+  PDPtr* getAdjacentPositions(PDPtr position);
 };
 
 #endif  // COSC_ASS_ONE_PATH_PLANNING
