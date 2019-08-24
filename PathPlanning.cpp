@@ -44,6 +44,8 @@ PathPlanning::~PathPlanning() {
     delete[] maze[i];
     maze[i] = nullptr;
   }
+
+  delete initialPos;
 }
 
 void PathPlanning::initialPosition(int x, int y) {
