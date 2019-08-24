@@ -185,27 +185,33 @@ PDList *PathPlanning::getPath(int toX, int toY) {
         new PositionDistance(curX, curY + 1, distance)};
 
     for (int j = 0; j < ADJACENT_SIZE; j++) {
-      // check if any adjacent cells are in shortestPath
+      // check if any adjacent cells are already in shortestPath
       if (shortestPath->containsCoordinate(adjacentCells[j])) {
         foundPos = shortestPath->findPDPtrByCoordinates(
             adjacentCells[j]->getX(), adjacentCells[j]->getY());
+
+        // if there's a position in the list with the same position as generated
+        // adjacent cell
         if (foundPos->getDistance() == distance) {
           currentPos = foundPos;
 
           // remove all other coordinates with the same distance from
           // the list
           shortestPath->removePDPtrWithSameDistance(currentPos);
-        } else {  // there's a coordinate with a different distance
+        }
 
-          // if it's not the goal or initial position, remove it from the list
-          if (!shortestPath->sameCoordinates(
-                  reachablePositions->findPDPtrByCoordinates(toX, toY),
-                  adjacentCells[j]) &&
-              !shortestPath->sameCoordinates(initialPos, adjacentCells[j]))
+        // there's a coordinate with a different distance
+        else {
+          // if it's not the goal or initial position, or if it has a distance
+          // less than what's in the list, remove it from the list
+          if (!shortestPath->sameCoordinates(initialPos, foundPos) &&
+              adjacentCells[j]->getDistance() < foundPos->getDistance()) {
             shortestPath->addBack(adjacentCells[j]);
+          }
           delete adjacentCells[j];
         }
       }  // if containsCoordinate
+
       else
         delete adjacentCells[j];
     }
