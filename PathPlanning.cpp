@@ -220,10 +220,10 @@ PDList *PathPlanning::getPath(int toX, int toY) {
       // select a PDPtr with a distance of currentPos - 1 from the list
       // currentPos = shortestPath->findPDPtrByDistance(distance);
     }
-    // while distance is more than 0
-    while (currentPos->getDistance() > 0)
-      ;
-
-    PDList *copy = new PDList(*shortestPath);
-    return copy;
   }
+  // while distance is more than 0
+  while (currentPos->getDistance() > 0);
+
+  PDList *copy = new PDList(*shortestPath);
+  return copy;
+}
