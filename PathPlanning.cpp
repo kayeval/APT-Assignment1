@@ -211,7 +211,8 @@ PDList *PathPlanning::getPath(int toX, int toY) {
         }    // if containsCoordinate
         else
           delete adjacentCells[j];
-      }
+      } else
+        delete adjacentCells[j];
 
       // if distance of adjacent cell == prev loc - 1, keep it in shortestPath
       // and set it as prev
