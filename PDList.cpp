@@ -8,17 +8,12 @@
 PDList::PDList() : numPositions(0) {
   *positions = new PositionDistance[MAX_POS]{};
   for (int i = 0; i < MAX_POS; i++) positions[i] = nullptr;
-
-  // std::cout << "CONSTRUCTOR CALLED" << std::endl;
 }
 
 PDList::~PDList() { clear(); }
 
 PDList::PDList(PDList &copy) {
   *positions = new PositionDistance[MAX_POS]{};
-  // std::cout << "=================================COPY CONSTRUCTOR CALLED"
-  //           << std::endl;
-
   numPositions = copy.size();
 
   for (int i = 0; i < copy.size(); i++) {
@@ -91,10 +86,9 @@ bool PDList::sameCoordinates(PDPtr p1, PDPtr p2) {
 
 bool PDList::containsCoordinate(PDPtr position) {
   for (int i = 0; i < numPositions; i++)
-    if (positions[i])
-      // if the x and y coordinates of any position in the list
-      // matches with the passed position
-      if (sameCoordinates(positions[i], position)) return true;
+    // if the x and y coordinates of any position in the list
+    // matches with the passed position
+    if (sameCoordinates(positions[i], position)) return true;
 
   return false;
 }

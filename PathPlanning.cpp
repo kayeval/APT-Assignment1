@@ -152,15 +152,14 @@ int PathPlanning::indexNotVisited(PDList *visited) {
 // THIS IS FOR MILESTONE 3 ONLY
 //    ONLY IMPLEMENT THIS IF YOU ATTEMPT MILESTONE 3
 PDList *PathPlanning::getPath(int toX, int toY) {
-  PDList *shortestPath = new PDList(*reachablePositions);
+  PDList *shortestPath = new PDList();
+  // bool visited[reachablePositions->size()];
 
-  // for (int i = 0; i < shortestPath->size(); i++)
-  //   std::cout << "shortestPath[" << i << "] = (" <<
-  //   shortestPath->get(i)->getX()
-  //             << "," << shortestPath->get(i)->getY() << ","
-  //             << shortestPath->get(i)->getDistance() << ")" << std::endl;
+  // for (int i = 0; i < reachablePositions->size(); i++) visited[i] = false;
 
-  PDPtr currentPos = shortestPath->findPDPtrByCoordinates(toX, toY);
+  PDPtr currentPos = initialPos;
+  shortestPath->addBack(currentPos);
+
   PDPtr foundPos = nullptr;
 
   do {
@@ -169,7 +168,7 @@ PDList *PathPlanning::getPath(int toX, int toY) {
     // TODO: use getAdjacentPositions()
     int curX = currentPos->getX();
     int curY = currentPos->getY();
-    int distance = currentPos->getDistance() - 1;
+    int distance = currentPos->getDistance() + 1;
 
     PDPtr adjacentCells[ADJACENT_SIZE] = {
         // the cell above current position
@@ -185,45 +184,18 @@ PDList *PathPlanning::getPath(int toX, int toY) {
         new PositionDistance(curX, curY + 1, distance)};
 
     for (int j = 0; j < ADJACENT_SIZE; j++) {
-      // check if any adjacent cells are already in shortestPath
-      if (shortestPath->containsCoordinate(adjacentCells[j])) {
-        foundPos = shortestPath->findPDPtrByCoordinates(
+      if (reachablePositions->containsCoordinate(adjacentCells[j])) {
+        foundPos = reachablePositions->findPDPtrByCoordinates(
             adjacentCells[j]->getX(), adjacentCells[j]->getY());
 
-        // if it's not the initial or goal coordinate
-        if (!(shortestPath->sameCoordinates(initialPos, foundPos) ||
-              shortestPath->sameCoordinates(
-                  shortestPath->findPDPtrByCoordinates(toX, toY), foundPos))) {
-          // if there's a position in the list with the same distance as
-          // generated adjacent cell
-          if (foundPos->getDistance() == distance) {
-            currentPos = foundPos;
-            // remove all other positions with the same distance
-            shortestPath->removePDPtrWithSameDistance(currentPos);
-          } else {
-            // if it has a distance
-            // less than what's in the list, remove it from the list
-            // if (adjacentCells[j]->getDistance() < foundPos->getDistance()) {
-            //   shortestPath->addBack(adjacentCells[j]);
-            // }
-            delete adjacentCells[j];
-          }  // if not initial or goal pos
-        }    // if containsCoordinate
-        else
-          delete adjacentCells[j];
-      } else
-        delete adjacentCells[j];
-
-      // if distance of adjacent cell == prev loc - 1, keep it in shortestPath
-      // and set it as prev
-      // else remove all other adjacent cells from shortestPath
-
-      // select a PDPtr with a distance of currentPos - 1 from the list
-      // currentPos = shortestPath->findPDPtrByDistance(distance);
+        if (foundPos->getDistance() == currentPos->getDistance() + 1) {
+          // add to visited
+          currentPos = foundPos;
+          shortestPath->addBack(currentPos);
+        }
+      }
     }
-  }
-  // while distance is more than 0
-  while (currentPos->getDistance() > 0);
+  } while (currentPos->getX() != toX && currentPos->getY() != toY);
 
   PDList *copy = new PDList(*shortestPath);
   return copy;
