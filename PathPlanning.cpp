@@ -190,44 +190,40 @@ PDList *PathPlanning::getPath(int toX, int toY) {
         foundPos = shortestPath->findPDPtrByCoordinates(
             adjacentCells[j]->getX(), adjacentCells[j]->getY());
 
-        // if there's a position in the list with the same position as generated
-        // adjacent cell
-        if (foundPos->getDistance() == distance) {
-          currentPos = foundPos;
-
-          // remove all other coordinates with the same distance from
-          // the list
-          shortestPath->removePDPtrWithSameDistance(currentPos);
-        }
-
-        // there's a coordinate with a different distance
-        else {
-          // if it's not the goal or initial position, or if it has a distance
-          // less than what's in the list, remove it from the list
-          if (!(shortestPath->sameCoordinates(initialPos, foundPos) ||
-                shortestPath->sameCoordinates(
-                    shortestPath->findPDPtrByCoordinates(toX, toY), foundPos) ||
-                adjacentCells[j]->getDistance() < foundPos->getDistance())) {
-            shortestPath->addBack(adjacentCells[j]);
-          }
+        // if it's not the initial or goal coordinate
+        if (!(shortestPath->sameCoordinates(initialPos, foundPos) ||
+              shortestPath->sameCoordinates(
+                  shortestPath->findPDPtrByCoordinates(toX, toY), foundPos))) {
+          // if there's a position in the list with the same distance as
+          // generated adjacent cell
+          if (foundPos->getDistance() == distance) {
+            currentPos = foundPos;
+            // remove all other positions with the same distance
+            shortestPath->removePDPtrWithSameDistance(currentPos);
+          } else {
+            // if it has a distance
+            // less than what's in the list, remove it from the list
+            if (adjacentCells[j]->getDistance() < foundPos->getDistance()) {
+              shortestPath->addBack(adjacentCells[j]);
+            }
+            delete adjacentCells[j];
+          }  // if not initial or goal pos
+        }    // if containsCoordinate
+        else
           delete adjacentCells[j];
-        }
-      }  // if containsCoordinate
+      }
 
-      else
-        delete adjacentCells[j];
+      // if distance of adjacent cell == prev loc - 1, keep it in shortestPath
+      // and set it as prev
+      // else remove all other adjacent cells from shortestPath
+
+      // select a PDPtr with a distance of currentPos - 1 from the list
+      // currentPos = shortestPath->findPDPtrByDistance(distance);
     }
+    // while distance is more than 0
+    while (currentPos->getDistance() > 0)
+      ;
 
-    // if distance of adjacent cell == prev loc - 1, keep it in shortestPath
-    // and set it as prev
-    // else remove all other adjacent cells from shortestPath
-
-    // select a PDPtr with a distance of currentPos - 1 from the list
-    // currentPos = shortestPath->findPDPtrByDistance(distance);
+    PDList *copy = new PDList(*shortestPath);
+    return copy;
   }
-  // while distance is more than 0
-  while (currentPos->getDistance() > 0);
-
-  PDList *copy = new PDList(*shortestPath);
-  return copy;
-}
