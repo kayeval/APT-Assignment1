@@ -63,7 +63,7 @@ void PDList::addBack(PDPtr position) {
 
 int PDList::indexOf(PDPtr position) {
   for (int i = 0; i < numPositions; i++)
-    if (containsCoordinate(position)) return i;
+    if (sameCoordinates(position, positions[i])) return i;
 
   return -1;
 }
