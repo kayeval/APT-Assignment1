@@ -195,8 +195,14 @@ PDList *PathPlanning::getPath(int toX, int toY) {
           // remove all other coordinates with the same distance from
           // the list
           shortestPath->removePDPtrWithSameDistance(currentPos);
-        } else {
-          shortestPath->addBack(adjacentCells[j]);
+        } else {  // there's a coordinate with a different distance
+
+          // if it's not the goal or initial position, remove it from the list
+          if (!shortestPath->sameCoordinates(
+                  reachablePositions->findPDPtrByCoordinates(toX, toY),
+                  adjacentCells[j]) &&
+              !shortestPath->sameCoordinates(initialPos, adjacentCells[j]))
+            shortestPath->addBack(adjacentCells[j]);
           delete adjacentCells[j];
         }
       }  // if containsCoordinate
