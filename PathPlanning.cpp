@@ -204,7 +204,9 @@ PDList *PathPlanning::getPath(int toX, int toY) {
         else {
           // if it's not the goal or initial position, or if it has a distance
           // less than what's in the list, remove it from the list
-          if (!shortestPath->sameCoordinates(initialPos, foundPos) &&
+          if (!shortestPath->sameCoordinates(initialPos, foundPos) ||
+              !shortestPath->sameCoordinates(
+                  shortestPath->findPDPtrByCoordinates(toX, toY), foundPos) ||
               adjacentCells[j]->getDistance() < foundPos->getDistance()) {
             shortestPath->addBack(adjacentCells[j]);
           }
