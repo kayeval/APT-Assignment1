@@ -203,9 +203,9 @@ PDList *PathPlanning::getPath(int toX, int toY) {
           } else {
             // if it has a distance
             // less than what's in the list, remove it from the list
-            if (adjacentCells[j]->getDistance() < foundPos->getDistance()) {
-              shortestPath->addBack(adjacentCells[j]);
-            }
+            // if (adjacentCells[j]->getDistance() < foundPos->getDistance()) {
+            //   shortestPath->addBack(adjacentCells[j]);
+            // }
             delete adjacentCells[j];
           }  // if not initial or goal pos
         }    // if containsCoordinate
