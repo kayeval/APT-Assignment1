@@ -37,10 +37,15 @@ PDPtr PDList::get(int i) {
 void PDList::addBack(PDPtr position) {
   // check if passed coordinates already exist in the list
   if (containsCoordinate(position)) {
-    // shift elements in array by 1 position
-    for (int i = indexOf(position); i < numPositions; i++)
-      positions[i] = positions[i + 1];
-
+    // the element to be removed is the last element of the array
+    if (indexOf(position) == numPositions - 1) {
+      delete positions[numPositions];
+      positions[numPositions] = nullptr;
+    } else {
+      // shift elements in array by 1 position
+      for (int i = indexOf(position); i < numPositions; i++)
+        positions[i] = positions[i + 1];
+    }
     numPositions--;
     // delete last element in array since it's been shifted already
     delete positions[numPositions];
@@ -48,7 +53,8 @@ void PDList::addBack(PDPtr position) {
     // initialize deleted element in array
     positions[numPositions] = nullptr;
 
-  } else {
+  }  // if containsCoordinate
+  else {
     // add a new position to the list
     positions[numPositions] = position;
     numPositions++;
