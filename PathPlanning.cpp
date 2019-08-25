@@ -1,42 +1,59 @@
 /*
+ * Kaye Ng's submission for Assignment 1
  *
+ *
+ * My PathPlanning implementation initializes a maze based on the rows and
+ * columns passed into the constructor (allocating space for only the total
+ * number of cells in the grid), then stores the initial position and adds it to
+ * the list of reachable positions in order to calculate all reachable positions
+ * in the grid starting from the initial position.
+ *
+ * Constructors for each class will set any parameters as it's constructed and
+ * destructors for each class will free up any memory it has allocated for each
+ * object it owns.
+ *
+ * For my implementation of getReachablePositions(), I set the initial position
+ * as the first cell to be traversed, then I check whether any adjacent position
+ * (to the current cell) is an accessible cell, and if so, I add it to the list
+ * of reachable positions and set it as the next cell to be traversed while
+ * storing a list of visited positions to check whether I've went through
+ * all possible reachable positions.
+ *
+ * For my implementation of getPath(), I set the goal position as the first cell
+ * to be traversed and check whether any of its adjacent positions are in the
+ * list of reachable positions, then check if it has a distance of exactly
+ * one less than the current position (as each position in the shortest path
+ * will always contain a distance of one less than the position before it,
+ * starting from the goal to the initial position), and if so, I add it to the
+ * list of positions containing the shortest path and set it as the next cell to
+ * be traversed. I did not make use of a temporary PDList that holds my visited
+ * cells, as I only need to compare whether I have reached my initial position
+ * in order to exit the loop. Before returning the shortest path list, I call
+ * the reverse() function in order to display it in order, from the initial
+ * position to the goal position. This reverse function swaps out the first and
+ * last memory address being pointed to in each position in the list and
+ * continues until the element at position size/2 has been reached.
+ *
+ * I minimized the allocation of objects on the heap to objects that I would
+ * need to access and modify elsewhere in the program from where they were
+ * declared, as in the case of PositionDistance objects. If an object allocated
+ * on the heap won't be needed anymore, it will be freed up. However, objects
+ * that would need to be accessed frequently (such as integers) are allocated on
+ * the stack.
+ *
+ * Each PDList allocates only the space needed for each PDPtr it holds by
+ * keeping track of the total number of PDPtr objects in the list.
+ *
+ * Methods that will only be used in the same class are declared as private
+ * methods, to prevent modifications from outside classes.
+ *
+ * I defined an ADJACENT_SIZE macro to improve software readability.
+ *
+ * However, some parts in my software design are a bit redundant, specifically
+ * in the generation of adjacent positions, as it's used in both
+ * getReachablePositions() and getPath().
  *
  */
-
-// TODO BEFORE SUBMISSION:
-// 1 - FINISH WRITING TESTS FOR MILESTONES 2 & 3
-// 2 - COMPILE ON SCHOOL'S UNIX SERVER
-// 3 - RUN TESTS AND VALGRIND ON COMPILED
-// 4 - WRITE REPORT (SEE BELOW)
-// 5 - FIX getAdjacentPositions method
-
-// MILESTONES 2 & 3
-// At the top of your PathPlanning implementation you must provide a description
-// of the design of your implementation. Provide this in a comment-block.
-// This block should:
-// • Describe (briefly) the approach you have taken in your implementation
-// • Describe (briefly) any issues you encountered
-//• Justify choices you made in your software design and implementation
-// • Analyse (briefly) the efficiency and quality of your implementation,
-// identifying both positive and negative aspects of your software
-
-/*
-================================PSEUDOCODE:================================
-Let x be the starting position of the robot with distance 0
-Let P be a list of positions the robot can reach, with distances (initially
-contains x) Let T be a temporary list (initially empty)
-
-repeat
-| Select an item p from P that is not in T
-| foreach Position, q that the robot can reach from p do
-   | | Set the distance of q to be one more than the distance of p
-   | | Add q to P if and only if there is no item in P with the same
-co-ordinate as q | end | Add p to T until No such position p can be found
-*/
-
-// MILESTONE 4
-// • Describe (briefly) the approach you have taken in your implementation.
-// • Justify (briefly) why your implementation is efficient.
 
 #include "PathPlanning.h"
 
@@ -49,7 +66,6 @@ co-ordinate as q | end | Add p to T until No such position p can be found
 PathPlanning::PathPlanning(Grid maze, int rows, int cols) {
   this->maze = new char *[rows] {};
   this->rows = rows;
-  this->cols = cols;
   this->initialPos = nullptr;
 
   for (int i = 0; i < rows; i++) this->maze[i] = new char[cols]{};
@@ -123,26 +139,6 @@ PDList *PathPlanning::getReachablePositions() {
   temp->addBack(initialPos);
 
   return temp;
-}
-
-PDPtr *getAdjacentPositions(PDPtr position) {
-  int curX = position->getX();
-  int curY = position->getY();
-  int distance = position->getDistance() + 1;
-  PDPtr *adjacentCells =
-      new PDPtr[ADJACENT_SIZE]{// the cell above current position
-                               new PositionDistance(curX, curY - 1, distance),
-
-                               // the cell to the left of current position
-                               new PositionDistance(curX - 1, curY, distance),
-
-                               // the cell to the right of current position
-                               new PositionDistance(curX + 1, curY, distance),
-
-                               // the cell below current position
-                               new PositionDistance(curX, curY + 1, distance)};
-
-  return adjacentCells;
 }
 
 int PathPlanning::indexNotVisited(PDList *visited) {
