@@ -1,9 +1,14 @@
+/*
+ *
+ *
+ */
 
 // TODO BEFORE SUBMISSION:
 // 1 - FINISH WRITING TESTS FOR MILESTONES 2 & 3
 // 2 - COMPILE ON SCHOOL'S UNIX SERVER
 // 3 - RUN TESTS AND VALGRIND ON COMPILED
 // 4 - WRITE REPORT (SEE BELOW)
+// 5 - FIX getAdjacentPositions method
 
 // MILESTONES 2 & 3
 // At the top of your PathPlanning implementation you must provide a description
@@ -99,6 +104,7 @@ PDList *PathPlanning::getReachablePositions() {
     // check if there are any accessible adjacent cells
     for (PDPtr pos : adjacentCells) {
       if (!reachablePositions->containsCoordinate(pos)) {
+        // if it's an accessible cell
         if (maze[pos->getY()][pos->getX()] == '.')
           reachablePositions->addBack(pos);
       } else
@@ -119,31 +125,23 @@ PDList *PathPlanning::getReachablePositions() {
 }
 
 PDPtr *getAdjacentPositions(PDPtr position) {
-  // int curX = position->getX();
-  // int curY = position->getY();
-  // int distance = position->getDistance() + 1;
+  int curX = position->getX();
+  int curY = position->getY();
+  int distance = position->getDistance() + 1;
+  PDPtr *adjacentCells =
+      new PDPtr[ADJACENT_SIZE]{// the cell above current position
+                               new PositionDistance(curX, curY - 1, distance),
 
-  // is an array with automatic storage duration. Memory where it resides is
-  // deallocated once the execution goes out of the scope of your function, thus
-  // pointer to this memory that you return becomes invalid (dangling pointer).
-  // Trying to access memory, that has already been deallocated,
-  //     results in undefined behaviour.
+                               // the cell to the left of current position
+                               new PositionDistance(curX - 1, curY, distance),
 
-  // PDPtr adjacentCells[ADJACENT_SIZE] = {
-  //     // the cell above current position
-  //     new PositionDistance(curX, curY - 1, distance),
+                               // the cell to the right of current position
+                               new PositionDistance(curX + 1, curY, distance),
 
-  //     // the cell to the left of current position
-  //     new PositionDistance(curX - 1, curY, distance),
+                               // the cell below current position
+                               new PositionDistance(curX, curY + 1, distance)};
 
-  //     // the cell to the right of current position
-  //     new PositionDistance(curX + 1, curY, distance),
-
-  //     // the cell below current position
-  //     new PositionDistance(curX, curY + 1, distance)};
-
-  // return adjacentCells;
-  return nullptr;
+  return adjacentCells;
 }
 
 int PathPlanning::indexNotVisited(PDList *visited) {
