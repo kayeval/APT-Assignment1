@@ -44,8 +44,6 @@ class PDList {
   /*                                           */
   PDList(PDList& copy);
   PDPtr findPDPtrByCoordinates(int x, int y);
-  void removePDPtrWithSameDistance(PDPtr position);
-  int indexOf(PDPtr position);
   bool sameCoordinates(PDPtr p1, PDPtr p2);
 
   /* This is a suggestion of what you could use. */
@@ -55,6 +53,7 @@ class PDList {
   int numPositions;
 
   bool sameCoordinates(int x, int y, PDPtr p);
+  int indexOf(PDPtr position);
 };
 
 #endif  // COSC_ASS_ONE_POSITION_LIST

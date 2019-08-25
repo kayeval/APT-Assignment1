@@ -1,19 +1,37 @@
 
 // TODO BEFORE SUBMISSION:
+// 1 - FINISH WRITING TESTS FOR MILESTONES 2 & 3
+// 2 - COMPILE ON SCHOOL'S UNIX SERVER
+// 3 - RUN TESTS AND VALGRIND ON COMPILED
+// 4 - WRITE REPORT (SEE BELOW)
 
-// 1 - COMPILE ON SCHOOL'S UNIX SERVER
-// 2 - RUN TESTS AND VALGRIND ON COMPILED
-
-// 2 - ADD DOCUMENTATION
+// MILESTONES 2 & 3
 // At the top of your PathPlanning implementation you must provide a description
 // of the design of your implementation. Provide this in a comment-block.
 // This block should:
-// • Describe (briefly) the approach you have taken in your
-// implementation
-// • Describe (briefly) any issues you encountered •
-// Justify choices you made in your software design and implementation
+// • Describe (briefly) the approach you have taken in your implementation
+// • Describe (briefly) any issues you encountered
+//• Justify choices you made in your software design and implementation
 // • Analyse (briefly) the efficiency and quality of your implementation,
 // identifying both positive and negative aspects of your software
+
+/*
+================================PSEUDOCODE:================================
+Let x be the starting position of the robot with distance 0
+Let P be a list of positions the robot can reach, with distances (initially
+contains x) Let T be a temporary list (initially empty)
+
+repeat
+| Select an item p from P that is not in T
+| foreach Position, q that the robot can reach from p do
+   | | Set the distance of q to be one more than the distance of p
+   | | Add q to P if and only if there is no item in P with the same
+co-ordinate as q | end | Add p to T until No such position p can be found
+*/
+
+// MILESTONE 4
+// • Describe (briefly) the approach you have taken in your implementation.
+// • Justify (briefly) why your implementation is efficient.
 
 #include "PathPlanning.h"
 
@@ -38,7 +56,7 @@ PathPlanning::PathPlanning(Grid maze, int rows, int cols) {
 }
 
 PathPlanning::~PathPlanning() {
-  reachablePositions->clear();  // TO RESOLVE: invalid read?
+  reachablePositions->clear();
 
   for (int i = 0; i < rows; i++) {
     delete[] maze[i];
@@ -48,24 +66,12 @@ PathPlanning::~PathPlanning() {
 
 void PathPlanning::initialPosition(int x, int y) {
   initialPos = new PositionDistance(x, y, 0);
+
+  // add initial position to the list of reachable positions
   reachablePositions->addBack(initialPos);
 }
 
 PDList *PathPlanning::getReachablePositions() {
-  /*
-  ================================PSEUDOCODE:================================
-  Let x be the starting position of the robot with distance 0
-  Let P be a list of positions the robot can reach, with distances (initially
-  contains x) Let T be a temporary list (initially empty)
-
-  repeat
-  | Select an item p from P that is not in T
-  | foreach Position, q that the robot can reach from p do
-     | | Set the distance of q to be one more than the distance of p
-     | | Add q to P if and only if there is no item in P with the same
-  co-ordinate as q | end | Add p to T until No such position p can be found
-  */
-
   PDList *visited = new PDList();
   int nextToVisit = 0;
   PDPtr currentPos = nullptr;
@@ -91,7 +97,6 @@ PDList *PathPlanning::getReachablePositions() {
         new PositionDistance(curX, curY + 1, distance)};
 
     // check if there are any accessible adjacent cells
-    // (excluding the initial position)
     for (PDPtr pos : adjacentCells) {
       if (!reachablePositions->containsCoordinate(pos)) {
         if (maze[pos->getY()][pos->getX()] == '.')
@@ -101,7 +106,7 @@ PDList *PathPlanning::getReachablePositions() {
         delete pos;
     }
 
-    // add currentPos to visited list
+    // add currentPos to list of visited positions
     visited->addBack(currentPos);
 
     nextToVisit = indexNotVisited(visited);
@@ -113,7 +118,6 @@ PDList *PathPlanning::getReachablePositions() {
   return temp;
 }
 
-// TO FIX
 PDPtr *getAdjacentPositions(PDPtr position) {
   // int curX = position->getX();
   // int curY = position->getY();
@@ -153,14 +157,14 @@ int PathPlanning::indexNotVisited(PDList *visited) {
 //    ONLY IMPLEMENT THIS IF YOU ATTEMPT MILESTONE 3
 PDList *PathPlanning::getPath(int toX, int toY) {
   PDList *shortestPath = new PDList();
-  // bool visited[reachablePositions->size()];
-
-  // for (int i = 0; i < reachablePositions->size(); i++) visited[i] = false;
-
-  PDPtr currentPos = initialPos;
-  shortestPath->addBack(currentPos);
 
   PDPtr foundPos = nullptr;
+
+  // the position to be visited
+  PDPtr currentPos = initialPos;
+
+  // add the initial position to shortestPath
+  shortestPath->addBack(currentPos);
 
   do {
     // generate all adjacent cells of current position
@@ -184,18 +188,29 @@ PDList *PathPlanning::getPath(int toX, int toY) {
         new PositionDistance(curX, curY + 1, distance)};
 
     for (int j = 0; j < ADJACENT_SIZE; j++) {
+      // if there's a position in the list with the same coordinates as the
+      // current adjacent position being traversed
       if (reachablePositions->containsCoordinate(adjacentCells[j])) {
+        // find and assign the position to foundPos
         foundPos = reachablePositions->findPDPtrByCoordinates(
             adjacentCells[j]->getX(), adjacentCells[j]->getY());
 
+        // if the distance of the found position is exactly 1 more than
+        // the current position's distance
         if (foundPos->getDistance() == currentPos->getDistance() + 1) {
-          // add to visited
+          // set it as the next position to check
           currentPos = foundPos;
+
+          // add it to shortestPath
           shortestPath->addBack(currentPos);
-        }
-      }
+        } else
+          delete adjacentCells[j];
+      } else
+        delete adjacentCells[j];
     }
-  } while (currentPos->getX() != toX && currentPos->getY() != toY);
+  }  // while the goal position has not yet been reached
+  while (!reachablePositions->sameCoordinates(
+      currentPos, reachablePositions->findPDPtrByCoordinates(toX, toY)));
 
   PDList *copy = new PDList(*shortestPath);
   return copy;
