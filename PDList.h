@@ -45,6 +45,7 @@ class PDList {
   PDList(PDList& copy);
   PDPtr findPDPtrByCoordinates(int x, int y);
   bool sameCoordinates(PDPtr p1, PDPtr p2);
+  void reverse();
 
   /* This is a suggestion of what you could use. */
   /* You can change this code.                   */

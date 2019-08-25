@@ -84,6 +84,7 @@ PDList *PathPlanning::getReachablePositions() {
   do {
     currentPos = reachablePositions->get(nextToVisit);
 
+    // generate all adjacent cells of current position
     int curX = currentPos->getX();
     int curY = currentPos->getY();
     int distance = currentPos->getDistance() + 1;
@@ -159,74 +160,74 @@ PDList *PathPlanning::getPath(int toX, int toY) {
   int i;
   PDPtr foundPos = nullptr;
 
-  // the position to be visited
-  PDPtr currentPos = initialPos;
+  // the position to be traversed
+  PDPtr currentPos = reachablePositions->findPDPtrByCoordinates(toX, toY);
 
-  // add the initial position to shortestPath
-  shortestPath->addBack(currentPos);
+  if (reachablePositions->containsCoordinate(currentPos)) {
+    if (!reachablePositions->sameCoordinates(currentPos, initialPos)) {
+      // add the goal position to shortestPath
+      shortestPath->addBack(currentPos);
+      // while the initial position has not yet been reached
+      while (!reachablePositions->sameCoordinates(currentPos, initialPos)) {
+        // generate all adjacent cells of current position
+        int curX = currentPos->getX();
+        int curY = currentPos->getY();
+        int distance = currentPos->getDistance() - 1;
 
-  do {
-    // generate all adjacent cells of current position
+        PDPtr adjacentCells[ADJACENT_SIZE] = {
+            // the cell above current position
+            new PositionDistance(curX, curY - 1, distance),
 
-    // TODO: use getAdjacentPositions()
-    int curX = currentPos->getX();
-    int curY = currentPos->getY();
-    int distance = currentPos->getDistance() + 1;
+            // the cell to the left of current position
+            new PositionDistance(curX - 1, curY, distance),
 
-    PDPtr adjacentCells[ADJACENT_SIZE] = {
-        // the cell above current position
-        new PositionDistance(curX, curY - 1, distance),
+            // the cell to the right of current position
+            new PositionDistance(curX + 1, curY, distance),
 
-        // the cell to the left of current position
-        new PositionDistance(curX - 1, curY, distance),
+            // the cell below current position
+            new PositionDistance(curX, curY + 1, distance)};
 
-        // the cell to the right of current position
-        new PositionDistance(curX + 1, curY, distance),
+        i = 0;
+        found = false;
+        while (!found) {
+          // if there's a position in the list with the same coordinates as the
+          // current adjacent position being traversed
+          if (reachablePositions->containsCoordinate(adjacentCells[i])) {
+            // find and assign the position to foundPos
+            foundPos = reachablePositions->findPDPtrByCoordinates(
+                adjacentCells[i]->getX(), adjacentCells[i]->getY());
 
-        // the cell below current position
-        new PositionDistance(curX, curY + 1, distance)};
+            // if the distance of the found position is exactly 1 less than
+            // the current position's distance
+            if (foundPos->getDistance() == currentPos->getDistance() - 1) {
+              found = true;
+              // set it as the next position to check
+              currentPos = foundPos;
 
-    i = 0;
-    found = false;
-    while (!found) {
-      // if there's a position in the list with the same coordinates as the
-      // current adjacent position being traversed
-      if (reachablePositions->containsCoordinate(adjacentCells[i])) {
-        // find and assign the position to foundPos
-        foundPos = reachablePositions->findPDPtrByCoordinates(
-            adjacentCells[i]->getX(), adjacentCells[i]->getY());
+              // add it to shortestPath
+              shortestPath->addBack(currentPos);
 
-        // if the distance of the found position is exactly 1 more than
-        // the current position's distance
-        if (foundPos->getDistance() == currentPos->getDistance() + 1) {
-          // set it as the next position to check
-          currentPos = foundPos;
+            } else {
+              delete adjacentCells[i];
+              adjacentCells[i] = nullptr;
+            }
+          } else {
+            delete adjacentCells[i];
+            adjacentCells[i] = nullptr;
+          }
+          i++;
+        }
 
-          // add it to shortestPath
-          shortestPath->addBack(currentPos);
-
-          // stop finding for current distance
-          found = true;
-        } else {
+        while (i < ADJACENT_SIZE) {
           delete adjacentCells[i];
           adjacentCells[i] = nullptr;
+          i++;
         }
-      } else {
-        delete adjacentCells[i];
-        adjacentCells[i] = nullptr;
       }
-      i++;
     }
-
-    while (i < ADJACENT_SIZE) {
-      delete adjacentCells[i];
-      adjacentCells[i] = nullptr;
-      i++;
-    }
-  }  // while the goal position has not yet been reached
-  while (!reachablePositions->sameCoordinates(
-      currentPos, reachablePositions->findPDPtrByCoordinates(toX, toY)));
+  }
 
   PDList *copy = new PDList(*shortestPath);
+  copy->reverse();
   return copy;
 }

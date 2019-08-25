@@ -81,12 +81,24 @@ bool PDList::sameCoordinates(PDPtr p1, PDPtr p2) {
 }
 
 bool PDList::containsCoordinate(PDPtr position) {
-  for (int i = 0; i < numPositions; i++)
-    // if the x and y coordinates of any element in the list
-    // matches with position
-    if (sameCoordinates(positions[i], position)) return true;
+  if (position) {
+    for (int i = 0; i < numPositions; i++)
+      // if the x and y coordinates of any element in the list
+      // matches with position
+      if (sameCoordinates(positions[i], position)) return true;
+  }
 
   return false;
+}
+
+void PDList::reverse() {
+  int end = numPositions - 1;
+  for (int i = 0; i < numPositions / 2; i++) {
+    PDPtr temp = positions[i];
+    positions[i] = positions[end];
+    positions[end] = temp;
+    end--;
+  }
 }
 
 void PDList::clear() {
