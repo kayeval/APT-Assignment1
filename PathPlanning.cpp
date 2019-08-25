@@ -207,10 +207,20 @@ PDList *PathPlanning::getPath(int toX, int toY) {
 
           // stop finding for current distance
           found = true;
-        } else
+        } else {
           delete adjacentCells[i];
-      } else
+          adjacentCells[i] = nullptr;
+        }
+      } else {
         delete adjacentCells[i];
+        adjacentCells[i] = nullptr;
+      }
+      i++;
+    }
+
+    while (i < ADJACENT_SIZE) {
+      delete adjacentCells[i];
+      adjacentCells[i] = nullptr;
       i++;
     }
   }  // while the goal position has not yet been reached
