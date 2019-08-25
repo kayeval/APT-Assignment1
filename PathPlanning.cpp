@@ -155,7 +155,8 @@ int PathPlanning::indexNotVisited(PDList *visited) {
 //    ONLY IMPLEMENT THIS IF YOU ATTEMPT MILESTONE 3
 PDList *PathPlanning::getPath(int toX, int toY) {
   PDList *shortestPath = new PDList();
-
+  bool found;
+  int i;
   PDPtr foundPos = nullptr;
 
   // the position to be visited
@@ -185,13 +186,15 @@ PDList *PathPlanning::getPath(int toX, int toY) {
         // the cell below current position
         new PositionDistance(curX, curY + 1, distance)};
 
-    for (int j = 0; j < ADJACENT_SIZE; j++) {
+    i = 0;
+    found = false;
+    while (!found) {
       // if there's a position in the list with the same coordinates as the
       // current adjacent position being traversed
-      if (reachablePositions->containsCoordinate(adjacentCells[j])) {
+      if (reachablePositions->containsCoordinate(adjacentCells[i])) {
         // find and assign the position to foundPos
         foundPos = reachablePositions->findPDPtrByCoordinates(
-            adjacentCells[j]->getX(), adjacentCells[j]->getY());
+            adjacentCells[i]->getX(), adjacentCells[i]->getY());
 
         // if the distance of the found position is exactly 1 more than
         // the current position's distance
@@ -201,10 +204,14 @@ PDList *PathPlanning::getPath(int toX, int toY) {
 
           // add it to shortestPath
           shortestPath->addBack(currentPos);
+
+          // stop finding for current distance
+          found = true;
         } else
-          delete adjacentCells[j];
+          delete adjacentCells[i];
       } else
-        delete adjacentCells[j];
+        delete adjacentCells[i];
+      i++;
     }
   }  // while the goal position has not yet been reached
   while (!reachablePositions->sameCoordinates(
