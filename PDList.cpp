@@ -14,6 +14,8 @@ PDList::~PDList() { clear(); }
 
 PDList::PDList(PDList &copy) {
   *positions = new PositionDistance[MAX_POS]{};
+  for (int i = 0; i < MAX_POS; i++) positions[i] = nullptr;
+
   numPositions = copy.size();
 
   for (int i = 0; i < copy.size(); i++) {
@@ -30,7 +32,7 @@ PDPtr PDList::get(int i) {
 }
 
 void PDList::addBack(PDPtr position) {
-  // check if passed coordinates already exist in the list
+  // check if position is already in the list
   if (containsCoordinate(position)) {
     // the element to be removed is the last element of the array
     if (indexOf(position) == numPositions - 1) {
@@ -65,15 +67,9 @@ int PDList::indexOf(PDPtr position) {
 
 PDPtr PDList::findPDPtrByCoordinates(int x, int y) {
   for (int i = 0; i < numPositions; i++)
+    // if a PDPtr with the same coordinates (x,y) is found in the list
     if (sameCoordinates(x, y, positions[i])) return positions[i];
   return nullptr;
-}
-
-void PDList::removePDPtrWithSameDistance(PDPtr position) {
-  for (int i = 0; i < numPositions; i++) {
-    if (positions[i]->getDistance() == position->getDistance())
-      if (!sameCoordinates(positions[i], position)) addBack(position);
-  }
 }
 
 bool PDList::sameCoordinates(int x, int y, PDPtr p) {
@@ -86,8 +82,8 @@ bool PDList::sameCoordinates(PDPtr p1, PDPtr p2) {
 
 bool PDList::containsCoordinate(PDPtr position) {
   for (int i = 0; i < numPositions; i++)
-    // if the x and y coordinates of any position in the list
-    // matches with the passed position
+    // if the x and y coordinates of any element in the list
+    // matches with position
     if (sameCoordinates(positions[i], position)) return true;
 
   return false;
